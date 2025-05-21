@@ -1,0 +1,52 @@
+DB_USER = ENV['DB_USER']
+DB_PASS = ENV['DB_PASS']
+DB_NAME = ENV['DB_NAME']
+
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  # DATABASE
+  config.vm.define "dbvm" do |db|
+    db.vm.hostname = "db-vm"
+    db.vm.network "private_network", ip: "192.168.56.10"
+
+    db.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y python3 python3-pip
+      pip3 install pymysql
+    SHELL
+
+    db.vm.provision "shell" do |s|
+      s.inline = "python3 /vagrant/provision/db_provision.py"
+      s.env = {
+        "DB_USER" => DB_USER,
+        "DB_PASS" => DB_PASS,
+        "DB_NAME" => DB_NAME
+      }
+    end
+  end
+
+   # APPLICATION
+  config.vm.define "app_vm" do |app|
+    app.vm.hostname = "appvm"
+    app.vm.network "private_network", ip: "192.168.56.11"
+    app.vm.network "forwarded_port", guest: 8080, host: 8080
+
+    app.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y python3 python3-pip
+      pip3 install gitpython
+    SHELL
+
+    app.vm.provision "shell" do |s|
+      s.inline = "python3 /vagrant/provision/app_provision.py"
+      s.env = {
+        "DB_HOST" => "192.168.56.10",
+        "DB_PORT" => "3306",
+        "DB_NAME" => DB_NAME,
+        "DB_USER" => DB_USER,
+        "DB_PASS" => DB_PASS
+      }
+    end
+  end
+end
