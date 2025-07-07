@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.log
+*.txt
+
+.env
+.idea/
+venv/
+.env/
+
+results.txt
+              
