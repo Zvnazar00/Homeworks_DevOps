@@ -11,7 +11,8 @@ def create_csv():
 
 def write_csv(students):
     with open(csv_file, 'w', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=['id', 'first_name', 'last_name', 'age'])        writer.writeheader()
+        writer = csv.DictWriter(f, fieldnames=['id', 'first_name', 'last_name', 'age'])
+        writer.writeheader()
         writer.writerows(students)
 
 def generate_new_id(students):
