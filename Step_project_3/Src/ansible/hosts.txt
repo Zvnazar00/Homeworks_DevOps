@@ -1,0 +1,5 @@
+[jenkins_master]
+18.195.96.69
+
+[jenkins_worker]
+10.0.2.198 ansible_ssh_common_args='-o ProxyJump=ubuntu@18.195.96.69'
