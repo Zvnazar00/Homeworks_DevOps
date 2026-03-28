@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-random-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: random-app
+  template:
+    metadata:
+      labels:
+        app: random-app
+    spec:
+      containers:
+      - name: python-random
+        image: zvnazar/python-random:v1
+        ports:
+        - containerPort: 8082
+      imagePullSecrets:
+      - name: regcred 
