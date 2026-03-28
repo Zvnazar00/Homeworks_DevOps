@@ -1,0 +1,32 @@
+- name: Install Docker and Nginx
+  hosts: nginx_hosts
+  become: true
+  tasks:
+    - name: Install Docker and Docker Compose
+      apt:
+        name:
+          - docker.io
+          - docker-compose-v2
+        update_cache: yes
+        state: present
+
+    - name: Create directory for Nginx
+      file:
+        path: /opt/nginx
+        state: directory
+
+    - name: Create docker-compose.yml
+      copy:
+        dest: /opt/nginx/docker-compose.yml
+        content: |
+          services:
+            web:
+              image: nginx:latest
+              ports:
+                - "80:80"
+              restart: always
+
+    - name: Run Docker Compose
+      command: docker compose up -d
+      args:
+        chdir: /opt/nginx
