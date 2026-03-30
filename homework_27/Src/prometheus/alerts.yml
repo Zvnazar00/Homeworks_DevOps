@@ -1,0 +1,20 @@
+groups:
+- name: monitoring_alerts
+  rules:
+  - alert: TargetDown
+    expr: up == 0
+    for: 1m
+    annotations:
+      summary: "Таргет {{ $labels.instance }} впав!"
+
+  - alert: HighCPU
+    expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+    for: 1m
+    annotations:
+      summary: "CPU на {{ $labels.instance }} завантажено більше ніж на 80%!"
+
+  - alert: LowDiskSpace
+    expr: (node_filesystem_avail_bytes{mountpoint="/"} * 100) / node_filesystem_size_bytes{mountpoint="/"} < 15
+    for: 1m
+    annotations:
+      summary: "На диску {{ $labels.instance }} залишилось менше 15% вільного місця!"
