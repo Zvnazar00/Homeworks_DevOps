@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: python-backend-ingress
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: api.nazar.devops11.test-danit.com
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: api.nazar.devops11.test-danit.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: python-backend-svc
+            port:
+              number: 80
